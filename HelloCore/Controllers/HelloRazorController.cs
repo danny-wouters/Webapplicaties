@@ -16,7 +16,7 @@ namespace HelloCore.Controllers
 
         public IActionResult Hallo(string naam, int aantal)
         {
-            ViewData["Message"] = "Hallo " + naam;
+            ViewData["Boodschap"] = "Hallo " + naam;
             ViewData["Aantal"] = aantal;
             return View();
         }
