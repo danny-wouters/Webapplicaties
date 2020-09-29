@@ -1,16 +1,19 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace HelloCore.Models
 {
     public class Klant
     {
-        public int Id { get; set; }
+        public int KlantID { get; set; }
         public string Naam { get; set; }
 
         public string Voornaam { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime AangemaaktDatum { get; set; }
+        public ICollection<Bestelling> Bestellingen { get; set; }
     }
 }
