@@ -23,8 +23,25 @@ namespace HelloCore.Controllers
         // GET: Bestelling
         public async Task<IActionResult> Index()
         {
-            var helloCoreContext = _context.Bestellingen.Include(b => b.Klant);
-            return View(await helloCoreContext.ToListAsync());
+            ListBestellingViewModel viewModel = new ListBestellingViewModel();
+            viewModel.Bestellingen = await _context.Bestellingen.Include(b => b.Klant).ToListAsync();
+            return View(viewModel);
+        }
+
+        // GET: Bestelling gefilterd op artikel
+        public async Task<IActionResult> Search(ListBestellingViewModel viewModel)
+        {
+            if (!string.IsNullOrEmpty(viewModel.ArtikelSearch))
+            {
+                viewModel.Bestellingen = await _context.Bestellingen.Include(b => b.Klant)
+                    .Where(b => b.Artikel.Contains(viewModel.ArtikelSearch)).ToListAsync();
+            }
+            else
+            {
+                viewModel.Bestellingen = await _context.Bestellingen.Include(b => b.Klant).ToListAsync();
+            }
+
+            return View("Index", viewModel);
         }
 
         // GET: Bestelling/Details/5
