@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HelloCore.Data;
 using HelloCore.Models;
+using HelloCore.ViewModels;
 
 namespace HelloCore.Controllers
 {
@@ -48,8 +49,10 @@ namespace HelloCore.Controllers
         // GET: Bestelling/Create
         public IActionResult Create()
         {
-            ViewData["KlantID"] = new SelectList(_context.Klanten, "KlantID", "Naam");
-            return View();
+            CreateBestellingViewModel viewModel = new CreateBestellingViewModel();
+            viewModel.Bestelling = new Bestelling();
+            viewModel.Klanten = new SelectList(_context.Klanten, "KlantID", "VolledigeNaam");
+            return View(viewModel);
         }
 
         // POST: Bestelling/Create
@@ -57,16 +60,16 @@ namespace HelloCore.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BestellingID,Artikel,Prijs,KlantID")] Bestelling bestelling)
+        public async Task<IActionResult> Create(CreateBestellingViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(bestelling);
+                _context.Add(viewModel.Bestelling);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["KlantID"] = new SelectList(_context.Klanten, "KlantID", "Naam", bestelling.KlantID);
-            return View(bestelling);
+            ViewData["KlantID"] = new SelectList(_context.Klanten, "KlantID", "VolledigeNaam", viewModel.Bestelling.KlantID);
+            return View(viewModel);
         }
 
         // GET: Bestelling/Edit/5
