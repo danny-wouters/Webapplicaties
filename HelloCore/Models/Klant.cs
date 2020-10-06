@@ -12,6 +12,7 @@ namespace HelloCore.Models
 
         public string Voornaam { get; set; }
 
+        [Display(Name = "Datum aangemaakt")]
         [DataType(DataType.Date)]
         public DateTime AangemaaktDatum { get; set; }
         public ICollection<Bestelling> Bestellingen { get; set; }
