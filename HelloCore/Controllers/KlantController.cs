@@ -54,7 +54,7 @@ namespace HelloCore.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("KlantID,Naam,Voornaam,AangemaaktDatum")] Klant klant)
+        public async Task<IActionResult> Create([Bind("Naam,Voornaam,AangemaaktDatum")] Klant klant)
         {
             if (ModelState.IsValid)
             {
