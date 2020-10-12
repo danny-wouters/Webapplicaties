@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using HelloCore.Data;
@@ -43,6 +44,12 @@ namespace HelloCore
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            // Set Default Culture to replace dot with comma as decimal marker.
+            CultureInfo cultureInfoDutchBelgium = new CultureInfo("nl-BE");
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfoDutchBelgium;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfoDutchBelgium;
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
