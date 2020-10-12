@@ -23,9 +23,9 @@
                 <span asp-validation-for="Bestelling.Prijs" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Bestelling.Klant" class="control-label"></label>
+                <label asp-for="Bestelling.KlantID" class="control-label">Klant</label>
                 <select asp-for="Bestelling.KlantID" class="form-control" asp-items="Model.Klanten"></select>
-                <span asp-validation-for="Bestelling.Klant" class="text-danger"></span>
+                <span asp-validation-for="Bestelling.KlantID" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
