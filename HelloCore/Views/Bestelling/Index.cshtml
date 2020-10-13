@@ -47,11 +47,17 @@
             <td>
                 @Html.DisplayFor(modelItem => bestelling.Klant.VolledigeNaam)
             </td>
+            @if (this.User.Identity.IsAuthenticated)
+            {
             <td>
                 <a asp-action="Edit" asp-route-id="@bestelling.BestellingID">Edit</a> |
                 <a asp-action="Details" asp-route-id="@bestelling.BestellingID">Details</a> |
+                @if (this.User.IsInRole("Admin"))
+                {
                 <a asp-action="Delete" asp-route-id="@bestelling.BestellingID">Delete</a>
+                }
             </td>
+            }
         </tr>
 }
     </tbody>

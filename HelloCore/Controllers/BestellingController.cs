@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using HelloCore.Data;
 using HelloCore.Models;
 using HelloCore.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HelloCore.Controllers
 {
+    [Authorize]
     public class BestellingController : Controller
     {
         private readonly HelloCoreContext _context;
@@ -21,6 +23,7 @@ namespace HelloCore.Controllers
         }
 
         // GET: Bestelling
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             ListBestellingViewModel viewModel = new ListBestellingViewModel();
@@ -29,6 +32,7 @@ namespace HelloCore.Controllers
         }
 
         // GET: Bestelling gefilterd op artikel
+        [AllowAnonymous]
         public async Task<IActionResult> Search(ListBestellingViewModel viewModel)
         {
             if (!string.IsNullOrEmpty(viewModel.ArtikelSearch))
@@ -144,6 +148,7 @@ namespace HelloCore.Controllers
         }
 
         // GET: Bestelling/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -165,6 +170,7 @@ namespace HelloCore.Controllers
         // POST: Bestelling/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var bestelling = await _context.Bestellingen.FindAsync(id);

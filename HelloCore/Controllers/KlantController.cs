@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using HelloCore.Data;
 using HelloCore.Models;
 using HelloCore.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HelloCore.Controllers
 {
@@ -139,6 +140,7 @@ namespace HelloCore.Controllers
         }
 
         // GET: Klant/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -159,6 +161,7 @@ namespace HelloCore.Controllers
         // POST: Klant/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var klant = await _context.Klanten.FindAsync(id);

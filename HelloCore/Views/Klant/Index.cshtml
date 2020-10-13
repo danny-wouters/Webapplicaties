@@ -51,7 +51,10 @@
             <td>
                 <a asp-action="Edit" asp-route-id="@klant.KlantID">Edit</a> |
                 <a asp-action="Details" asp-route-id="@klant.KlantID">Details</a> |
+                @if (this.User.Identity.IsAuthenticated)
+                {
                 <a asp-action="Delete" asp-route-id="@klant.KlantID">Delete</a>
+                }
             </td>
         </tr>
 }
