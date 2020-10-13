@@ -36,21 +36,21 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Bestellingen) {
+@foreach (Bestelling bestelling in Model.Bestellingen) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Artikel)
+                @Html.DisplayFor(modelItem => bestelling.Artikel)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Prijs)
+                @Html.DisplayFor(modelItem => bestelling.Prijs)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Klant.Naam)
+                @Html.DisplayFor(modelItem => bestelling.Klant.VolledigeNaam)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.BestellingID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.BestellingID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.BestellingID">Delete</a>
+                <a asp-action="Edit" asp-route-id="@bestelling.BestellingID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@bestelling.BestellingID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@bestelling.BestellingID">Delete</a>
             </td>
         </tr>
 }
