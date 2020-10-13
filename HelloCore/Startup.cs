@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using HelloCore.Areas.Identity.Data;
 using HelloCore.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,7 +31,7 @@ namespace HelloCore
             services.AddControllersWithViews();
             services.AddDbContext<HelloCoreContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("HelloCoreConnection")));
-            services.AddDefaultIdentity<IdentityUser>()
+            services.AddDefaultIdentity<CustomUser>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<HelloCoreContext>();
         }
