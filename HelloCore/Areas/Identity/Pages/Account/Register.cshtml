@@ -9,9 +9,8 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h4>Create a new account.</h4>
+            <h2>Create a new account.</h2>
             <hr />
-            <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Input.Naam"></label>
                 <input asp-for="Input.Naam" class="form-control" />
@@ -19,22 +18,22 @@
             </div>
             <div class="form-group">
                 <label asp-for="Input.Geboortedatum"></label>
-                <input asp-for="Input.Naam" class="form-control" />
-                <span asp-validation-for="Input.Geboortedatum" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.Geboortedatum"></label>
                 <input asp-for="Input.Geboortedatum" class="form-control" />
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
+                <span asp-validation-for="Input.Geboortedatum" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Input.Email"></label>
                 <input asp-for="Input.Email" class="form-control" />
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Input.Password"></label>
                 <input asp-for="Input.Password" class="form-control" />
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.ConfirmPassword"></label>
+                <input asp-for="Input.ConfirmPassword" class="form-control" />
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
             <button type="submit" class="btn btn-primary">Register</button>
