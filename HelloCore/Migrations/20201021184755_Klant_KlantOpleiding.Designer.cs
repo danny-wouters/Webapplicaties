@@ -4,14 +4,16 @@ using HelloCore.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace HelloCore.Migrations
 {
     [DbContext(typeof(HelloCoreContext))]
-    partial class HelloCoreContextModelSnapshot : ModelSnapshot
+    [Migration("20201021184755_Klant_KlantOpleiding")]
+    partial class Klant_KlantOpleiding
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

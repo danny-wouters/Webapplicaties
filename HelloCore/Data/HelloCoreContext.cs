@@ -18,6 +18,8 @@ namespace HelloCore.Data
 
         public DbSet<Klant> Klanten { get; set; }
         public DbSet<Bestelling> Bestellingen { get; set; }
+        public DbSet<Opleiding> Opleiding { get; set; }
+        public DbSet<KlantOpleiding> KlantOpleidingen { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -29,6 +31,12 @@ namespace HelloCore.Data
 
             modelBuilder.Entity<Bestelling>().ToTable("Bestelling");
             modelBuilder.Entity<Bestelling>().Property(p => p.Prijs).HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Opleiding>().ToTable("Opleiding");
+            modelBuilder.Entity<Opleiding>().Property(p => p.Prijs).HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<KlantOpleiding>().ToTable("KlantOpleiding");
         }
+
     }
 }
