@@ -11,6 +11,6 @@ namespace HelloCore.Models
         public string Naam { get; set; }
         public Decimal Prijs { get; set; }
         public int AantalLesuren { get; set; }
-        public IEnumerable<KlantOpleiding> KlantOpleidingen { get; set; }
+        public List<KlantOpleiding> KlantOpleidingen { get; set; }
     }
 }
