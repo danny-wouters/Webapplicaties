@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HelloCore.Data;
 using HelloCore.Models;
+using HelloCore.ViewModels;
 
 namespace HelloCore.Controllers
 {
@@ -46,7 +47,13 @@ namespace HelloCore.Controllers
         // GET: Opleiding/Create
         public IActionResult Create()
         {
-            return View();
+            CreateOpleidingViewModel viewModel = new CreateOpleidingViewModel
+            {
+                Opleiding = new Opleiding(),
+                KlantenLijst = new SelectList(_context.Klanten, "KlantID", "VolledigeNaam"),
+                GeselecteerdeKlanten = new List<int>()
+            };
+            return View(viewModel);
         }
 
         // POST: Opleiding/Create
@@ -54,15 +61,36 @@ namespace HelloCore.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("OpleidingID,Naam,Prijs,AantalLesuren")] Opleiding opleiding)
+        public async Task<IActionResult> Create(CreateOpleidingViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(opleiding);
+                List<KlantOpleiding> nieuweKlanten = new List<KlantOpleiding>();
+                if (viewModel.GeselecteerdeKlanten == null)
+                {
+                    viewModel.GeselecteerdeKlanten = new List<int>();
+                }
+                foreach(int klantID in viewModel.GeselecteerdeKlanten)
+                {
+                    nieuweKlanten.Add(new KlantOpleiding
+                    {
+                        KlantID = klantID,
+                        OpleidingID = viewModel.Opleiding.OpleidingID
+                    });
+                }
+
+                _context.Add(viewModel.Opleiding);
                 await _context.SaveChangesAsync();
+
+                Opleiding opleiding = await _context.Opleiding.Include(o => o.KlantOpleidingen)
+                    .SingleOrDefaultAsync(x => x.OpleidingID == viewModel.Opleiding.OpleidingID);
+                opleiding.KlantOpleidingen.AddRange(nieuweKlanten);
+                _context.Update(opleiding);
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(opleiding);
+            return View(viewModel);
         }
 
         // GET: Opleiding/Edit/5
