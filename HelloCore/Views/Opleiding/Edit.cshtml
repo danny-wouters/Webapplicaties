@@ -1,4 +1,4 @@
-﻿@model HelloCore.Models.Opleiding
+﻿@model HelloCore.ViewModels.EditOpleidingViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -6,27 +6,30 @@
 
 <h1>Edit</h1>
 
-<h4>Opleiding</h4>
+<h2>Opleiding</h2>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="OpleidingID" />
+            <input type="hidden" asp-for="Opleiding.OpleidingID" />
             <div class="form-group">
-                <label asp-for="Naam" class="control-label"></label>
-                <input asp-for="Naam" class="form-control" />
-                <span asp-validation-for="Naam" class="text-danger"></span>
+                <label asp-for="Opleiding.Naam" class="control-label"></label>
+                <input asp-for="Opleiding.Naam" class="form-control" />
+                <span asp-validation-for="Opleiding.Naam" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Prijs" class="control-label"></label>
-                <input asp-for="Prijs" class="form-control" />
-                <span asp-validation-for="Prijs" class="text-danger"></span>
+                <label asp-for="Opleiding.Prijs" class="control-label"></label>
+                <input asp-for="Opleiding.Prijs" class="form-control" />
+                <span asp-validation-for="Opleiding.Prijs" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="AantalLesuren" class="control-label"></label>
-                <input asp-for="AantalLesuren" class="form-control" />
-                <span asp-validation-for="AantalLesuren" class="text-danger"></span>
+                <label asp-for="Opleiding.AantalLesuren" class="control-label"></label>
+                <input asp-for="Opleiding.AantalLesuren" class="form-control" />
+                <span asp-validation-for="Opleiding.AantalLesuren" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <select asp-for="GeselecteerdeKlanten" asp-items="Model.KlantenLijst"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

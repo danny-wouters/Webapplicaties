@@ -65,12 +65,14 @@ namespace HelloCore.Controllers
         {
             if (ModelState.IsValid)
             {
-                List<KlantOpleiding> nieuweKlanten = new List<KlantOpleiding>();
+                // viewModel.GeselecteerdeKlanten is null when no Klant was selected in the view.
                 if (viewModel.GeselecteerdeKlanten == null)
                 {
                     viewModel.GeselecteerdeKlanten = new List<int>();
                 }
-                foreach(int klantID in viewModel.GeselecteerdeKlanten)
+
+                List<KlantOpleiding> nieuweKlanten = new List<KlantOpleiding>();
+                foreach (int klantID in viewModel.GeselecteerdeKlanten)
                 {
                     nieuweKlanten.Add(new KlantOpleiding
                     {
@@ -101,12 +103,20 @@ namespace HelloCore.Controllers
                 return NotFound();
             }
 
-            var opleiding = await _context.Opleiding.FindAsync(id);
+            Opleiding opleiding = await _context.Opleiding.Include(o => o.KlantOpleidingen)
+                .SingleOrDefaultAsync(x => x.OpleidingID == id);
             if (opleiding == null)
             {
                 return NotFound();
             }
-            return View(opleiding);
+
+            EditOpleidingViewModel viewModel = new EditOpleidingViewModel {
+                Opleiding = opleiding,
+                KlantenLijst = new SelectList(_context.Klanten, "KlantID", "VolledigeNaam"),
+                GeselecteerdeKlanten = opleiding.KlantOpleidingen.Select(ko => ko.KlantID)
+            };
+
+            return View(viewModel);
         }
 
         // POST: Opleiding/Edit/5
@@ -114,34 +124,49 @@ namespace HelloCore.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OpleidingID,Naam,Prijs,AantalLesuren")] Opleiding opleiding)
+        public async Task<IActionResult> Edit(int id, EditOpleidingViewModel viewModel)
         {
-            if (id != opleiding.OpleidingID)
+            if (id != viewModel.Opleiding.OpleidingID)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                try
+                // Load opleiding from database since we lose values of KlantOpleidingen after form submit in View
+                Opleiding opleiding = await _context.Opleiding.Include(o => o.KlantOpleidingen)
+                    .SingleOrDefaultAsync(x => x.OpleidingID == id);
+                // Save values from viewmodel to tracked opleiding instance
+                opleiding.Naam = viewModel.Opleiding.Naam;
+                opleiding.Prijs = viewModel.Opleiding.Prijs;
+                opleiding.AantalLesuren = viewModel.Opleiding.AantalLesuren;
+
+                // viewModel.GeselecteerdeKlanten is null when no Klant was selected in the view.
+                if (viewModel.GeselecteerdeKlanten == null)
                 {
-                    _context.Update(opleiding);
-                    await _context.SaveChangesAsync();
+                    viewModel.GeselecteerdeKlanten = new List<int>();
                 }
-                catch (DbUpdateConcurrencyException)
+
+                List<KlantOpleiding> nieuweKlanten = new List<KlantOpleiding>();
+                foreach (int klantID in viewModel.GeselecteerdeKlanten)
                 {
-                    if (!OpleidingExists(opleiding.OpleidingID))
+                    nieuweKlanten.Add(new KlantOpleiding
                     {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                        KlantID = klantID,
+                        OpleidingID = viewModel.Opleiding.OpleidingID
+                    });
                 }
+
+                opleiding.KlantOpleidingen
+                    .RemoveAll(ko => !nieuweKlanten.Contains(ko));
+                opleiding.KlantOpleidingen.AddRange(
+                    nieuweKlanten.Where(nk => !opleiding.KlantOpleidingen.Contains(nk)));
+                _context.Update(opleiding);
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(opleiding);
+            return View(viewModel);
         }
 
         // GET: Opleiding/Delete/5
