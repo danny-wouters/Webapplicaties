@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HelloCore.Data;
 using HelloCore.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace HelloCore.Controllers.api
 {
@@ -43,6 +45,7 @@ namespace HelloCore.Controllers.api
         }
 
         // GET: api/Bestelling/lijst
+        [Authorize]
         [HttpGet("lijst")]
         public async Task<ActionResult<IEnumerable<Bestelling>>> GetBestellingenlijst()
         {
