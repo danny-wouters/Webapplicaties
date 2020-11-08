@@ -9,6 +9,7 @@ using HelloCore.Data;
 using HelloCore.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using HelloCore.Data.UnitOfWork;
 
 namespace HelloCore.Controllers.api
 {
@@ -16,25 +17,25 @@ namespace HelloCore.Controllers.api
     [ApiController]
     public class BestellingController : ControllerBase
     {
-        private readonly HelloCoreContext _context;
+        private readonly IUnitOfWork _uow;
 
-        public BestellingController(HelloCoreContext context)
+        public BestellingController(IUnitOfWork uow)
         {
-            _context = context;
+            _uow = uow;
         }
 
         // GET: api/Bestelling
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Bestelling>>> GetBestellingen()
         {
-            return await _context.Bestellingen.ToListAsync();
+            return await _uow.BestellingRepository.GetAll().ToListAsync();
         }
 
         // GET: api/Bestelling/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Bestelling>> GetBestelling(int id)
         {
-            var bestelling = await _context.Bestellingen.FindAsync(id);
+            Bestelling bestelling = _uow.BestellingRepository.GetById(id);
 
             if (bestelling == null)
             {
@@ -49,7 +50,7 @@ namespace HelloCore.Controllers.api
         [HttpGet("lijst")]
         public async Task<ActionResult<IEnumerable<Bestelling>>> GetBestellingenlijst()
         {
-            return await _context.Bestellingen.Include(b => b.Klant).ToListAsync();
+            return await _uow.BestellingRepository.GetAll().Include(b => b.Klant).ToListAsync();
         }
 
         // PUT: api/Bestelling/5
@@ -63,23 +64,13 @@ namespace HelloCore.Controllers.api
                 return BadRequest();
             }
 
-            _context.Update(bestelling);
+            if (!BestellingExists(id))
+            {
+                return NotFound();
+            }
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!BestellingExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            _uow.BestellingRepository.Update(id, bestelling);
+            _uow.Save();
 
             return NoContent();
         }
@@ -90,8 +81,8 @@ namespace HelloCore.Controllers.api
         [HttpPost]
         public async Task<ActionResult<Bestelling>> PostBestelling(Bestelling bestelling)
         {
-            _context.Bestellingen.Add(bestelling);
-            await _context.SaveChangesAsync();
+            _uow.BestellingRepository.Create(bestelling);
+            _uow.Save();
 
             return CreatedAtAction("GetBestelling", new { id = bestelling.BestellingID }, bestelling);
         }
@@ -100,21 +91,21 @@ namespace HelloCore.Controllers.api
         [HttpDelete("{id}")]
         public async Task<ActionResult<Bestelling>> DeleteBestelling(int id)
         {
-            var bestelling = await _context.Bestellingen.FindAsync(id);
+            Bestelling bestelling = _uow.BestellingRepository.GetById(id);
             if (bestelling == null)
             {
                 return NotFound();
             }
 
-            _context.Bestellingen.Remove(bestelling);
-            await _context.SaveChangesAsync();
+            _uow.BestellingRepository.Delete(id);
+            _uow.Save();
 
             return NoContent();
         }
 
         private bool BestellingExists(int id)
         {
-            return _context.Bestellingen.Any(e => e.BestellingID == id);
+            return (_uow.BestellingRepository.GetById(id) != null);
         }
     }
 }

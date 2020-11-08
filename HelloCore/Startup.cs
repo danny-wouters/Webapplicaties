@@ -6,7 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using HelloCore.Areas.Identity.Data;
 using HelloCore.Data;
+using HelloCore.Data.Repository;
+using HelloCore.Data.UnitOfWork;
 using HelloCore.Helpers;
+using HelloCore.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -42,6 +45,8 @@ namespace HelloCore
                 .AddEntityFrameworkStores<HelloCoreContext>();
 
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             // configure jwt authentication
             var appSettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
