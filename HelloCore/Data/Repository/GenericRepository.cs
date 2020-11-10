@@ -29,16 +29,14 @@ namespace HelloCore.Data.Repository
             _context.Set<TEntity>().Add(entity);
         }
 
-        public void Update(int id, TEntity entity)
+        public void Update(TEntity entity)
         {
             _context.Set<TEntity>().Update(entity);
         }
 
-        public void Delete(int id)
+        public void Delete(TEntity entity)
         {
-            var entity = GetById(id);
             _context.Set<TEntity>().Remove(entity);
         }
-
     }
 }

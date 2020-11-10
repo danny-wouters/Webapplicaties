@@ -64,12 +64,7 @@ namespace HelloCore.Controllers.api
                 return BadRequest();
             }
 
-            if (!BestellingExists(id))
-            {
-                return NotFound();
-            }
-
-            _uow.BestellingRepository.Update(id, bestelling);
+            _uow.BestellingRepository.Update(bestelling);
             _uow.Save();
 
             return NoContent();
@@ -97,7 +92,7 @@ namespace HelloCore.Controllers.api
                 return NotFound();
             }
 
-            _uow.BestellingRepository.Delete(id);
+            _uow.BestellingRepository.Delete(bestelling);
             _uow.Save();
 
             return NoContent();
