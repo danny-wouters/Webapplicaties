@@ -35,7 +35,7 @@ namespace HelloCore.Controllers.api
         [HttpGet("{id}")]
         public async Task<ActionResult<Bestelling>> GetBestelling(int id)
         {
-            Bestelling bestelling = _uow.BestellingRepository.GetById(id);
+            Bestelling bestelling = await _uow.BestellingRepository.GetById(id);
 
             if (bestelling == null)
             {
@@ -65,7 +65,7 @@ namespace HelloCore.Controllers.api
             }
 
             _uow.BestellingRepository.Update(bestelling);
-            _uow.Save();
+            await _uow.Save();
 
             return NoContent();
         }
@@ -77,7 +77,7 @@ namespace HelloCore.Controllers.api
         public async Task<ActionResult<Bestelling>> PostBestelling(Bestelling bestelling)
         {
             _uow.BestellingRepository.Create(bestelling);
-            _uow.Save();
+            await _uow.Save();
 
             return CreatedAtAction("GetBestelling", new { id = bestelling.BestellingID }, bestelling);
         }
@@ -86,21 +86,16 @@ namespace HelloCore.Controllers.api
         [HttpDelete("{id}")]
         public async Task<ActionResult<Bestelling>> DeleteBestelling(int id)
         {
-            Bestelling bestelling = _uow.BestellingRepository.GetById(id);
+            Bestelling bestelling = await _uow.BestellingRepository.GetById(id);
             if (bestelling == null)
             {
                 return NotFound();
             }
 
             _uow.BestellingRepository.Delete(bestelling);
-            _uow.Save();
+            await _uow.Save();
 
             return NoContent();
-        }
-
-        private bool BestellingExists(int id)
-        {
-            return (_uow.BestellingRepository.GetById(id) != null);
         }
     }
 }

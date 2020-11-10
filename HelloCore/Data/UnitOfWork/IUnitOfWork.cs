@@ -10,6 +10,6 @@ namespace HelloCore.Data.UnitOfWork
     public interface IUnitOfWork
     {
         IGenericRepository<Bestelling> BestellingRepository { get; }
-        void Save();
+        Task Save();
     }
 }

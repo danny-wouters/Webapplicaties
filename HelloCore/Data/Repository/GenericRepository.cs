@@ -19,9 +19,9 @@ namespace HelloCore.Data.Repository
             return _context.Set<TEntity>();
         }
 
-        public TEntity GetById(int id)
+        public async Task<TEntity> GetById(int id)
         {
-            return _context.Set<TEntity>().Find(id);
+            return await _context.Set<TEntity>().FindAsync(id);
         }
 
         public void Create(TEntity entity)
@@ -38,5 +38,6 @@ namespace HelloCore.Data.Repository
         {
             _context.Set<TEntity>().Remove(entity);
         }
+
     }
 }
