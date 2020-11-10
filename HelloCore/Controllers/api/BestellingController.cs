@@ -46,7 +46,7 @@ namespace HelloCore.Controllers.api
         }
 
         // GET: api/Bestelling/lijst
-        [Authorize]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("lijst")]
         public async Task<ActionResult<IEnumerable<Bestelling>>> GetBestellingenlijst()
         {
