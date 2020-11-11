@@ -2,9 +2,12 @@
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using HelloCore.Areas.Identity.Data;
+using HelloCore.Data;
+using HelloCore.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace HelloCore.Areas.Identity.Pages.Account.Manage
@@ -14,15 +17,18 @@ namespace HelloCore.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<CustomUser> _userManager;
         private readonly SignInManager<CustomUser> _signInManager;
         private readonly ILogger<DeletePersonalDataModel> _logger;
+        private readonly HelloCoreContext _context;
 
         public DeletePersonalDataModel(
             UserManager<CustomUser> userManager,
             SignInManager<CustomUser> signInManager,
-            ILogger<DeletePersonalDataModel> logger)
+            ILogger<DeletePersonalDataModel> logger,
+            HelloCoreContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _context = context;
         }
 
         [BindProperty]
@@ -66,6 +72,10 @@ namespace HelloCore.Areas.Identity.Pages.Account.Manage
                     return Page();
                 }
             }
+
+            Klant klant = await _context.Klanten.FirstOrDefaultAsync(x => x.UserID == user.Id);
+            _context.Klanten.Remove(klant);
+            await _context.SaveChangesAsync();
 
             var result = await _userManager.DeleteAsync(user);
             var userId = await _userManager.GetUserIdAsync(user);

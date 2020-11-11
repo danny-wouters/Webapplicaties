@@ -29,6 +29,11 @@ namespace HelloCore.Data
             modelBuilder.Entity<Klant>().Property(p => p.Naam).IsRequired();
             modelBuilder.Entity<Klant>().Ignore(p => p.VolledigeNaam);
 
+            modelBuilder.Entity<CustomUser>()
+                .HasOne(k => k.Klant)
+                .WithOne(c => c.CustomUser)
+                .HasForeignKey<Klant>(k => k.UserID);
+
             modelBuilder.Entity<Bestelling>().ToTable("Bestelling");
             modelBuilder.Entity<Bestelling>().Property(p => p.Prijs).HasColumnType("decimal(18,2)");
 

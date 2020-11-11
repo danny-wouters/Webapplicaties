@@ -6,6 +6,9 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using HelloCore.Areas.Identity.Data;
+using HelloCore.Data;
+using HelloCore.Data.UnitOfWork;
+using HelloCore.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -24,17 +27,20 @@ namespace HelloCore.Areas.Identity.Pages.Account
         private readonly UserManager<CustomUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly HelloCoreContext _context;
 
         public RegisterModel(
             UserManager<CustomUser> userManager,
             SignInManager<CustomUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            HelloCoreContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
         }
 
         [BindProperty]
@@ -51,10 +57,9 @@ namespace HelloCore.Areas.Identity.Pages.Account
             [Display(Name = "Naam")]
             public string Naam { get; set; }
 
-            [Required]
-            [Display(Name = "Geboortedatum")]
-            [DataType(DataType.Date)]
-            public DateTime Geboortedatum { get; set; }
+            [DataType(DataType.Text)]
+            [Display(Name = "Voornaam")]
+            public string Voornaam { get; set; }
 
             [Required]
             [EmailAddress]
@@ -85,8 +90,22 @@ namespace HelloCore.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new CustomUser { Naam = Input.Naam, Geboortedatum = Input.Geboortedatum, UserName = Input.Email, Email = Input.Email };
+                var user = new CustomUser
+                {
+                    UserName = Input.Email,
+                    Email = Input.Email,
+                    Klant = new Klant
+                    {
+                        Naam = Input.Naam,
+                        Voornaam = Input.Voornaam,
+                        AangemaaktDatum = DateTime.Now
+                    }
+                };
                 var result = await _userManager.CreateAsync(user, Input.Password);
+                user.Klant.UserID = user.Id;
+
+                await _context.SaveChangesAsync();
+
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");

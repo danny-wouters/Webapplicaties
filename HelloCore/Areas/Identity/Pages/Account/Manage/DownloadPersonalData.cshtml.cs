@@ -5,9 +5,12 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using HelloCore.Areas.Identity.Data;
+using HelloCore.Data;
+using HelloCore.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace HelloCore.Areas.Identity.Pages.Account.Manage
@@ -16,13 +19,16 @@ namespace HelloCore.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<CustomUser> _userManager;
         private readonly ILogger<DownloadPersonalDataModel> _logger;
+        private readonly HelloCoreContext _context;
 
         public DownloadPersonalDataModel(
             UserManager<CustomUser> userManager,
-            ILogger<DownloadPersonalDataModel> logger)
+            ILogger<DownloadPersonalDataModel> logger,
+            HelloCoreContext context)
         {
             _userManager = userManager;
             _logger = logger;
+            _context = context;
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -35,6 +41,8 @@ namespace HelloCore.Areas.Identity.Pages.Account.Manage
 
             _logger.LogInformation("User with ID '{UserId}' asked for their personal data.", _userManager.GetUserId(User));
 
+            Klant klant = await _context.Klanten.FirstOrDefaultAsync(x => x.UserID == user.Id);
+            user.Klant = klant;
             // Only include personal data for download
             var personalData = new Dictionary<string, string>();
             var personalDataProps = typeof(CustomUser).GetProperties().Where(

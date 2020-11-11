@@ -2,11 +2,16 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using HelloCore.Areas.Identity.Data;
+using HelloCore.Data;
+using HelloCore.Data.UnitOfWork;
+using HelloCore.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace HelloCore.Areas.Identity.Pages.Account.Manage
 {
@@ -14,13 +19,16 @@ namespace HelloCore.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<CustomUser> _userManager;
         private readonly SignInManager<CustomUser> _signInManager;
+        private readonly HelloCoreContext _context;
 
         public IndexModel(
             UserManager<CustomUser> userManager,
-            SignInManager<CustomUser> signInManager)
+            SignInManager<CustomUser> signInManager,
+            HelloCoreContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _context = context;
         }
 
         public string Username { get; set; }
@@ -38,10 +46,9 @@ namespace HelloCore.Areas.Identity.Pages.Account.Manage
             [Display(Name = "Naam")]
             public string Naam { get; set; }
 
-            [Required]
-            [Display(Name = "Geboortedatum")]
-            [DataType(DataType.Date)]
-            public DateTime Geboortedatum { get; set; }
+            [DataType(DataType.Text)]
+            [Display(Name = "Voornaam")]
+            public string Voornaam { get; set; }
 
             [Phone]
             [Display(Name = "Phone number")]
@@ -55,10 +62,13 @@ namespace HelloCore.Areas.Identity.Pages.Account.Manage
 
             Username = userName;
 
+            Klant klant = await _context.Klanten.FirstOrDefaultAsync(x => x.UserID == user.Id);
+            user.Klant = klant;
+
             Input = new InputModel
             {
-                Naam = user.Naam,
-                Geboortedatum = user.Geboortedatum,
+                Naam = user.Klant.Naam,
+                Voornaam = user.Klant.Voornaam,
                 PhoneNumber = phoneNumber
             };
         }
@@ -89,16 +99,6 @@ namespace HelloCore.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
-            if (Input.Naam != user.Naam)
-            {
-                user.Naam = Input.Naam;
-            }
-
-            if (Input.Geboortedatum != user.Geboortedatum)
-            {
-                user.Geboortedatum = Input.Geboortedatum;
-            }
-
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             if (Input.PhoneNumber != phoneNumber)
             {
@@ -109,6 +109,12 @@ namespace HelloCore.Areas.Identity.Pages.Account.Manage
                     return RedirectToPage();
                 }
             }
+
+            Klant klant = await _context.Klanten.FirstOrDefaultAsync(x => x.UserID == user.Id);
+            user.Klant = klant;
+
+            user.Klant.Voornaam = Input.Voornaam;
+            user.Klant.Naam = Input.Naam;
 
             await _userManager.UpdateAsync(user);
 

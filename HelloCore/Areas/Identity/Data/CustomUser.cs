@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using HelloCore.Models;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,6 @@ namespace HelloCore.Areas.Identity.Data
     public class CustomUser : IdentityUser
     {
         [PersonalData]
-        public string Naam { get; set; }
-        [PersonalData]
-        public DateTime Geboortedatum { get; set; }
+        public Klant Klant { get; set; }
     }
 }
