@@ -1,0 +1,43 @@
+﻿@model HelloCore.ViewModels.CreateBestellingViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Bestelling</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Bestelling.Artikel" class="control-label"></label>
+                <input asp-for="Bestelling.Artikel" class="form-control" />
+                <span asp-validation-for="Bestelling.Artikel" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Bestelling.Prijs" class="control-label"></label>
+                <input asp-for="Bestelling.Prijs" class="form-control" />
+                <span asp-validation-for="Bestelling.Prijs" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Bestelling.KlantID" class="control-label">Klant</label>
+                <select asp-for="Bestelling.KlantID" class="form-control" asp-items="Model.Klanten"></select>
+                <span asp-validation-for="Bestelling.KlantID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
