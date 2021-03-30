@@ -31,6 +31,8 @@ namespace HelloCore
             Configuration = configuration;
         }
 
+        readonly string MyAllowAllOrigins = "_myAllowAllOrigins";
+
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -96,6 +98,12 @@ namespace HelloCore
                 }
                 });
             });
+
+            // Add Cross-origin resource sharing policy
+            services.AddCors(c =>
+            {
+                c.AddPolicy(MyAllowAllOrigins, options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -116,6 +124,8 @@ namespace HelloCore
             CultureInfo cultureInfoDutchBelgium = new CultureInfo("nl-BE");
             CultureInfo.DefaultThreadCurrentCulture = cultureInfoDutchBelgium;
             CultureInfo.DefaultThreadCurrentUICulture = cultureInfoDutchBelgium;
+
+            app.UseCors(MyAllowAllOrigins);
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
